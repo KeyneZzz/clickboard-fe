@@ -7,6 +7,7 @@
       <a-col  :span="2">
         <a-button 
           size="small" style="display:inline;vertical-align: middle;"
+          :disabled="addDisabled"
           v-on:click="addObj">Add</a-button>
       </a-col>
     </a-row>
@@ -35,8 +36,10 @@ export default {
     components: { ClipboardObject },
     data() {
       var clipboardObjects=new Array(0)
+      var addDisabled=true
       return {
-        clipboardObjects
+        clipboardObjects,
+        addDisabled
       };
     },
     mounted() {
@@ -53,16 +56,21 @@ export default {
         this.saveAll()
       },
       saveAll() {
+        const saving = message.loading('Saving...', 0);
         axios({
           method:'put',
           url: 'http://127.0.0.1:8000/api/clipboardObjects',
           data: this.clipboardObjects,
         }).then(function (resp){
+          setTimeout(saving,200)
           if(resp.status==200){
             message.success('Save successful')
           } else {
             message.error('Save failed')
           }
+        }).catch(function (err){
+          setTimeout(saving,200)
+          message.error(`${err.code}: ${err.message}, please refresh!`,0)
         })
       },
       delObj(uid) {
@@ -92,6 +100,7 @@ export default {
           if(resp.status==200){
             that.clipboardObjects = resp.data
             setTimeout(loading,200)
+            that.addDisabled=false
             message.success('Loaded')
           } else {
             setTimeout(loading,200)
