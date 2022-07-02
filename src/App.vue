@@ -59,7 +59,7 @@ export default {
         const saving = message.loading('Saving...', 0);
         axios({
           method:'put',
-          url: 'http://127.0.0.1:8000/api/clipboardObjects',
+          url: '/api/clipboardObjects',
           data: this.clipboardObjects,
         }).then(function (resp){
           setTimeout(saving,200)
@@ -94,7 +94,7 @@ export default {
         let that=this
         axios({
           method:'get',
-          url: 'http://127.0.0.1:8000/api/clipboardObjects',
+          url: '/api/clipboardObjects',
           timeout: 5000, // ms
         }).then(function (resp){
           if(resp.status==200){
